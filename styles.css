@@ -39,10 +39,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
+  font-size: 20px; /* Adjust font size for words */
+  text-transform: capitalize;
 }
 
 .card .back {
   background-color: #f0f0f0;
   transform: rotateY(180deg);
+}
+
+.card .back img {
+  max-width: 100%; /* Ensure images scale well */
+  height: auto;
 }
