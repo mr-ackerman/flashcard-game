@@ -1,12 +1,12 @@
 const cardsArray = [
-  { type: 'word', name: 'banana', content: 'banana' },
-  { type: 'image', name: 'banana', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg" alt="banana">' },
-  { type: 'word', name: 'apple', content: 'apple' },
-  { type: 'image', name: 'apple', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" alt="apple">' },
-  { type: 'word', name: 'grape', content: 'grape' },
-  { type: 'image', name: 'grape', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Table_grapes_on_white.jpg" alt="grape">' },
-  { type: 'word', name: 'lemon', content: 'lemon' },
-  { type: 'image', name: 'lemon', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Lemon.jpg" alt="lemon">' }
+  { name: 'apple', img: '🍎' },
+  { name: 'banana', img: '🍌' },
+  { name: 'grape', img: '🍇' },
+  { name: 'lemon', img: '🍋' },
+  { name: 'apple', img: '🍎' },
+  { name: 'banana', img: '🍌' },
+  { name: 'grape', img: '🍇' },
+  { name: 'lemon', img: '🍋' }
 ];
 
 let firstCard, secondCard;
@@ -22,17 +22,10 @@ function createBoard() {
     card.classList.add('card');
     card.dataset.name = cardData.name;
 
-    if (cardData.type === 'word') {
-      card.innerHTML = `
-        <div class="front">${cardData.content}</div>
-        <div class="back"></div>
-      `;
-    } else if (cardData.type === 'image') {
-      card.innerHTML = `
-        <div class="front">${cardData.content}</div>
-        <div class="back"></div>
-      `;
-    }
+    card.innerHTML = `
+      <div class="front">${cardData.img}</div>
+      <div class="back"></div>
+    `;
 
     card.addEventListener('click', flipCard);
     gameBoard.appendChild(card);
