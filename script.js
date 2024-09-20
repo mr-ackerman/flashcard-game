@@ -1,12 +1,12 @@
 const cardsArray = [
-  { name: 'apple', img: '🍎' },
-  { name: 'banana', img: '🍌' },
-  { name: 'grape', img: '🍇' },
-  { name: 'lemon', img: '🍋' },
-  { name: 'apple', img: '🍎' },
-  { name: 'banana', img: '🍌' },
-  { name: 'grape', img: '🍇' },
-  { name: 'lemon', img: '🍋' }
+  { type: 'word', name: 'banana', content: 'banana' },
+  { type: 'image', name: 'banana', content: '🍌' },
+  { type: 'word', name: 'apple', content: 'apple' },
+  { type: 'image', name: 'apple', content: '🍎' },
+  { type: 'word', name: 'grape', content: 'grape' },
+  { type: 'image', name: 'grape', content: '🍇' },
+  { type: 'word', name: 'lemon', content: 'lemon' },
+  { type: 'image', name: 'lemon', content: '🍋' }
 ];
 
 let firstCard, secondCard;
@@ -22,10 +22,17 @@ function createBoard() {
     card.classList.add('card');
     card.dataset.name = cardData.name;
 
-    card.innerHTML = `
-      <div class="front">${cardData.img}</div>
-      <div class="back"></div>
-    `;
+    if (cardData.type === 'word') {
+      card.innerHTML = `
+        <div class="front">${cardData.content}</div>
+        <div class="back"></div>
+      `;
+    } else if (cardData.type === 'image') {
+      card.innerHTML = `
+        <div class="front">${cardData.content}</div>
+        <div class="back"></div>
+      `;
+    }
 
     card.addEventListener('click', flipCard);
     gameBoard.appendChild(card);
@@ -41,36 +48,4 @@ function flipCard() {
   if (!hasFlippedCard) {
     hasFlippedCard = true;
     firstCard = this;
-    return;
-  }
-
-  secondCard = this;
-  checkForMatch();
-}
-
-function checkForMatch() {
-  let isMatch = firstCard.dataset.name === secondCard.dataset.name;
-  isMatch ? disableCards() : unflipCards();
-}
-
-function disableCards() {
-  firstCard.removeEventListener('click', flipCard);
-  secondCard.removeEventListener('click', flipCard);
-  resetBoard();
-}
-
-function unflipCards() {
-  lockBoard = true;
-  setTimeout(() => {
-    firstCard.classList.remove('flipped');
-    secondCard.classList.remove('flipped');
-    resetBoard();
-  }, 1000);
-}
-
-function resetBoard() {
-  [hasFlippedCard, lockBoard] = [false, false];
-  [firstCard, secondCard] = [null, null];
-}
-
-createBoard();
+  
