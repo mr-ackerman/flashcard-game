@@ -1,17 +1,20 @@
 const cardsArray = [
-  { name: 'apple', img: '🍎' },
-  { name: 'banana', img: '🍌' },
-  { name: 'grape', img: '🍇' },
-  { name: 'lemon', img: '🍋' },
-  { name: 'apple', img: '🍎' },
-  { name: 'banana', img: '🍌' },
-  { name: 'grape', img: '🍇' },
-  { name: 'lemon', img: '🍋' }
+  { type: 'word', name: 'banana', content: 'banana' },
+  { type: 'image', name: 'banana', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg" alt="banana">' },
+  { type: 'word', name: 'apple', content: 'apple' },
+  { type: 'image', name: 'apple', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" alt="apple">' },
+  { type: 'word', name: 'grape', content: 'grape' },
+  { type: 'image', name: 'grape', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Table_grapes_on_white.jpg" alt="grape">' },
+  { type: 'word', name: 'lemon', content: 'lemon' },
+  { type: 'image', name: 'lemon', content: '<img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Lemon.jpg" alt="lemon">' }
 ];
 
 let firstCard, secondCard;
 let hasFlippedCard = false;
 let lockBoard = false;
+
+// Load sound file
+const matchSound = new Audio('match-sound.mp3');
 
 function createBoard() {
   const gameBoard = document.getElementById('game-board');
@@ -22,10 +25,17 @@ function createBoard() {
     card.classList.add('card');
     card.dataset.name = cardData.name;
 
-    card.innerHTML = `
-      <div class="front">${cardData.img}</div>
-      <div class="back"></div>
-    `;
+    if (cardData.type === 'word') {
+      card.innerHTML = `
+        <div class="front">${cardData.content}</div>
+        <div class="back"></div>
+      `;
+    } else if (cardData.type === 'image') {
+      card.innerHTML = `
+        <div class="front">${cardData.content}</div>
+        <div class="back"></div>
+      `;
+    }
 
     card.addEventListener('click', flipCard);
     gameBoard.appendChild(card);
@@ -50,7 +60,13 @@ function flipCard() {
 
 function checkForMatch() {
   let isMatch = firstCard.dataset.name === secondCard.dataset.name;
-  isMatch ? disableCards() : unflipCards();
+  if (isMatch) {
+    // Play sound if the pair is matched
+    matchSound.play();
+    disableCards();
+  } else {
+    unflipCards();
+  }
 }
 
 function disableCards() {
