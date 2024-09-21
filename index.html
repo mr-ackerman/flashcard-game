@@ -3,13 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flashcard Matching Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Matching Game</title>
+  <style>
+    /* Card container */
+    .card {
+      width: 120px;
+      height: 120px;
+      display: inline-block;
+      position: relative;
+      perspective: 1000px;
+    }
+    
+    /* Card front and back */
+    .card .front, .card .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      transition: transform 0.6s;
+    }
+
+    /* Front (image or word) */
+    .card .front {
+      background: white;
+    }
+    
+    /* Back side styling */
+    .card .back {
+      background: lightgray;
+      transform: rotateY(180deg);
+    }
+
+    /* Flipped card styling */
+    .card.flipped .front {
+      transform: rotateY(0);
+    }
+    
+    .card.flipped .back {
+      transform: rotateY(-180deg);
+    }
+
+    /* Image constraints */
+    .card .front img {
+      width: 100%;
+      height: auto;
+      max-height: 100px;
+      object-fit: contain;
+    }
+  </style>
 </head>
 <body>
-  <h1>Flashcard Matching Game</h1>
   <div id="game-board"></div>
 
-  <script src="script.js"></script>
+  <script>
+    const cardsArray = [
+      { type: 'word', name: 'banana', content: 'banana' },
+      { type: 'image', name: 'banana', content: '<img src="images/banana.jpg" alt="banana">' },
+      { type: 'word', name: 'apple', content: 'apple' },
+      { type: 'image', name: 'apple', content: '<img src="images/apple.jpg" alt="apple">' },
+      { type: 'word', name: 'grape', content: 'grape' },
+      { type: 'image', name: 'grape', content: '<img src="images/grape.jpg" alt="grape">' },
+      { type: 'word', name: 'lemon', content: 'lemon' },
+      { type: 'image', name: 'lemon', content: '<img src="images/lemon.jpg" alt="lemon">' }
+    ];
+
+    let firstCard, secondCard;
+    let hasFlippedCard = false;
+    let lockBoard = false;
+
+    function createBoard() {
+      const gameBoard = document.getElementById('game-board');
+      cardsArray.sort(() => 0.5 - Math.random()); // Shuffle cards
+
+      cardsArray.forEach(cardData => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.name = cardData.name;
+
+        if (cardData.type === 'word') {
+          card.innerHTML = `
+            <div class="front">${cardData.content}</div>
+            <div class="back"></div>
+          `;
+        } else if (cardData.type === 'image') {
+          card.innerHTML = `
+            <div class="front">${cardData.content}</div>
+            <div class="back"></div>
+          `;
+        }
+
+        card.addEventListener('click', flipCard);
+        gameBoard.appendChild(card);
+      });
+    }
+
+    function flipCard() {
+      if (lockBoard) return;
+      if (this === firstCard) return;
+
+      this.classList.add('flipped');
+
+      if (!hasFlippedCard) {
+        hasFlippedCard = true;
+        firstCard = this;
+        return;
+      }
+
+      secondCard = this;
+      checkForMatch();
+    }
+
+    function checkForMatch() {
+      let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+      if (isMatch) {
+        disableCards();
+      } else {
+        unflipCards();
+      }
+    }
+
+    function disableCards() {
+      firstCard.removeEventListener('click', flipCard);
+      secondCard.removeEventListener('click', flipCard);
+      resetBoard();
+    }
+
+    function unflipCards() {
+      lockBoard = true;
+      setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        secondCard.classList.remove('flipped');
+        resetBoard();
+      }, 1000);
+    }
+
+    function resetBoard() {
+      [hasFlippedCard, lockBoard] = [false, false];
+      [firstCard, secondCard] = [null, null];
+    }
+
+    createBoard();
+  </script>
 </body>
 </html>
